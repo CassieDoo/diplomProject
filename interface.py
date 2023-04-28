@@ -40,9 +40,9 @@ class BotInterface:
     def get_media(self, owner_id):
         photos = tools.photos_get(owner_id)
         media_list = []
-        for num, x in enumerate(photos):
-            owner_id = x[1]['owner_id']
-            photo_id = x[1]['photo_id']
+        for num, item in enumerate(photos):
+            owner_id = item[1]['owner_id']
+            photo_id = item[1]['photo_id']
             media = 'photo' + str(owner_id) + '_' + str(photo_id)
             media_list.append(media)
             if num == 2:
