@@ -55,11 +55,16 @@ class VkTools:
         return result
 
     def photos_get(self, owner_id):
-        photos = self.ext_api.method('photos.get',
-                                     {'album_id': 'profile',
-                                      'owner_id': owner_id,
-                                      'extended': 'likes'
-                                      })
+        try:
+            photos = self.ext_api.method('photos.get',
+                                         {'album_id': 'profile',
+                                          'owner_id': owner_id,
+                                          'extended': 'likes'
+                                          })
+
+        except ApiError:
+            return
+
         try:
             photos = photos['items']
         except KeyError:
@@ -67,10 +72,14 @@ class VkTools:
 
         photo_info = []
         for photo in photos:
-            photo_info.append([int(photo['likes']['count']),
-                               {'owner_id': photo['owner_id'],
-                                'photo_id': photo['id']
-                                }])
+            try:
+                photo_info.append([int(photo['likes']['count']),
+                                   {'owner_id': photo['owner_id'],
+                                    'photo_id': photo['id']
+                                    }])
+            except KeyError:
+                return
+
         photo_info.sort(key=lambda item: item[0], reverse=True)
 
         return photo_info

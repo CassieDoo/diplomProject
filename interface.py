@@ -99,6 +99,7 @@ class BotInterface:
 
     def handler(self, offset=0):
         longpoll = VkLongPoll(self.bot)
+        result = []
         for event in longpoll.listen():
             if event.type == VkEventType.MESSAGE_NEW and event.to_me:
                 if event.text.lower() == 'привет':
@@ -140,15 +141,20 @@ class BotInterface:
 
     def get_media(self, owner_id):
         photos = tools.photos_get(owner_id)
-        media_list = []
-        for num, item in enumerate(photos):
-            owner_id = item[1]['owner_id']
-            photo_id = item[1]['photo_id']
-            media = 'photo' + str(owner_id) + '_' + str(photo_id)
-            media_list.append(media)
-            if num == 2:
-                break
 
+        media_list = []
+        if photos:
+            for num, item in enumerate(photos):
+                try:
+                    owner_id = item[1]['owner_id']
+                    photo_id = item[1]['photo_id']
+                    media = 'photo' + str(owner_id) + '_' + str(photo_id)
+                    media_list.append(media)
+                    if num == 2:
+                        break
+
+                except KeyError:
+                    return
         return media_list
 
 
